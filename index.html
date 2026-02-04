@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Soshum</title>
+    <title>Dashboard Soshum - Kirim Pesan</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -54,6 +54,29 @@
         @keyframes pulse {
             0%, 100% { opacity: 1; }
             50% { opacity: 0.7; }
+        }
+        
+        .message-notification {
+            position: relative;
+        }
+        
+        .message-notification::after {
+            content: '';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 8px;
+            height: 8px;
+            background-color: #ef4444;
+            border-radius: 50%;
+            animation: ping 1.5s cubic-bezier(0, 0, 0.2, 1) infinite;
+        }
+        
+        @keyframes ping {
+            75%, 100% {
+                transform: scale(2);
+                opacity: 0;
+            }
         }
         
         @media (max-width: 768px) {
@@ -139,6 +162,14 @@
                         <span>Events</span>
                     </a>
                 </li>
+                <!-- Menu Kirim Pesan Baru -->
+                <li>
+                    <a href="#" data-page="pesan" class="page-nav flex items-center p-3 rounded-lg hover:bg-gray-800 message-notification">
+                        <i class="fas fa-envelope w-6 text-center mr-3"></i>
+                        <span>Kirim Pesan</span>
+                        <span class="ml-auto bg-red-500 text-white text-xs rounded-full px-2 py-1">New</span>
+                    </a>
+                </li>
             </ul>
         </nav>
         
@@ -159,10 +190,17 @@
         <!-- Header -->
         <header class="bg-white shadow-sm p-4 hidden lg:block">
             <div class="flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">Dashboard Utama</h1>
-                <div class="text-gray-600 flex items-center">
-                    <i class="fas fa-clock mr-2"></i>
-                    <span id="currentDateTime">Memuat waktu...</span>
+                <h1 class="text-2xl font-bold text-gray-800" id="pageTitle">Dashboard Utama</h1>
+                <div class="flex items-center space-x-4">
+                    <!-- Notification Bell -->
+                    <button id="messageNotification" class="relative text-gray-600 hover:text-gray-800">
+                        <i class="fas fa-envelope text-xl"></i>
+                        <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                    </button>
+                    <div class="text-gray-600 flex items-center">
+                        <i class="fas fa-clock mr-2"></i>
+                        <span id="currentDateTime">Memuat waktu...</span>
+                    </div>
                 </div>
             </div>
         </header>
@@ -253,7 +291,7 @@
                     </div>
                 </div>
                 
-                <!-- Quick Info -->
+                <!-- Quick Info & Kirim Pesan Cepat -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white rounded-xl shadow-lg p-6">
                         <h3 class="text-lg font-bold text-gray-800 mb-4">Akses Cepat</h3>
@@ -275,6 +313,20 @@
                                 <div>
                                     <p class="font-medium">Profil Siswa</p>
                                     <p class="text-gray-500 text-sm">Database siswa dengan foto</p>
+                                </div>
+                            </a>
+                            
+                            <!-- Quick Kirim Pesan -->
+                            <a href="#" data-page="pesan" class="page-nav flex items-center p-3 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer bg-blue-50">
+                                <div class="bg-indigo-100 p-2 rounded-lg mr-3">
+                                    <i class="fas fa-envelope text-indigo-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Kirim Pesan Cepat</p>
+                                    <p class="text-gray-500 text-sm">Kirim pesan ke kelompok</p>
+                                </div>
+                                <div class="ml-auto">
+                                    <i class="fas fa-arrow-right text-indigo-400"></i>
                                 </div>
                             </a>
                         </div>
@@ -308,6 +360,19 @@
                                     </a>
                                 </div>
                             </div>
+                            
+                            <div class="flex items-start">
+                                <div class="bg-red-100 p-2 rounded-lg mr-3 mt-1">
+                                    <i class="fas fa-bullhorn text-red-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-medium">Fitur Pesan Baru</p>
+                                    <p class="text-gray-500 text-sm">Kirim pesan ke seluruh anggota kelompok</p>
+                                    <a href="#" data-page="pesan" class="page-nav text-blue-600 hover:text-blue-800 text-sm mt-1 inline-block cursor-pointer">
+                                        Coba sekarang <i class="fas fa-arrow-right ml-1"></i>
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -319,6 +384,8 @@
                     <div class="border-b border-gray-200 p-4 flex justify-between items-center">
                         <h2 id="iframeTitle" class="text-xl font-bold text-gray-800">Judul Halaman</h2>
                         <button id="backToDashboard" class="bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium py-2 px-4 rounded-lg flex items-center">
+                            <i class="fas fa-arrow-left mr-2"></i>
+                            Kembali ke Dashboard
                         </button>
                     </div>
                     <iframe id="contentFrame" class="w-full h-full border-0" src="" title="External Content"></iframe>
@@ -379,6 +446,9 @@
             
             // Setup mobile menu
             setupMobileMenu();
+            
+            // Setup message notification
+            setupMessageNotification();
         });
         
         // Update clocks function
@@ -414,6 +484,18 @@
             
             if (sidebarTimeElement) {
                 sidebarTimeElement.textContent = timeString;
+            }
+        }
+        
+        // Setup message notification
+        function setupMessageNotification() {
+            const notificationButton = document.getElementById('messageNotification');
+            if (notificationButton) {
+                notificationButton.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Navigate to message page
+                    showIframe('pesan');
+                });
             }
         }
         
@@ -457,7 +539,7 @@
             });
         }
         
-        // Navigation functionality
+        // Navigation functionality - DIPERBARUI untuk menambahkan halaman pesan
         function setupNavigation() {
             const dashboardLink = document.querySelector('.dashboard-nav');
             const pageLinks = document.querySelectorAll('.page-nav');
@@ -466,6 +548,7 @@
             const iframeContent = document.getElementById('iframeContent');
             const iframe = document.getElementById('contentFrame');
             const iframeTitle = document.getElementById('iframeTitle');
+            const pageTitle = document.getElementById('pageTitle');
             
             // Dashboard link
             dashboardLink.addEventListener('click', function(e) {
@@ -490,6 +573,7 @@
             function showDashboard() {
                 dashboardContent.classList.remove('hidden');
                 iframeContent.classList.add('hidden');
+                pageTitle.textContent = 'Dashboard Utama';
                 
                 // Update active state in sidebar
                 pageLinks.forEach(link => link.classList.remove('bg-indigo-800'));
@@ -521,10 +605,15 @@
                         url = 'https://shohib321.github.io/Events-Lomba/';
                         title = 'Events & Lomba';
                         break;
+                    case 'pesan': // Halaman baru untuk kirim pesan
+                        url = 'https://shohib321.github.io/kirim-pesan-soshum/';
+                        title = 'Kirim Pesan ke Kelompok';
+                        break;
                 }
                 
                 iframe.src = url;
                 iframeTitle.textContent = title;
+                pageTitle.textContent = title;
                 dashboardContent.classList.add('hidden');
                 iframeContent.classList.remove('hidden');
                 
@@ -630,7 +719,7 @@
             }
         }
         
-        // NEW FUNCTION: Load events with countdown
+        // Load events with countdown
         async function loadEventsWithCountdown() {
             try {
                 const sheetId = '1jGvMHKTZAB92LAEVRUluvnNBvA8BFz7bMzvRjOGFkqc';
@@ -654,33 +743,26 @@
                             
                             // Try different date formats
                             if (dateStr.includes('/')) {
-                                // Format: DD/MM/YYYY or MM/DD/YYYY
                                 const parts = dateStr.split('/');
                                 if (parts.length === 3) {
-                                    // Try both formats
                                     const day = parseInt(parts[0]);
                                     const month = parseInt(parts[1]);
                                     const year = parseInt(parts[2]);
                                     
                                     if (day > 12) {
-                                        // Likely DD/MM/YYYY
                                         eventDate = new Date(year, month - 1, day);
                                     } else if (month > 12) {
-                                        // Likely MM/DD/YYYY but month > 12, invalid
                                         eventDate = new Date(year, day - 1, month);
                                     } else {
-                                        // Ambiguous, assume DD/MM/YYYY
                                         eventDate = new Date(year, month - 1, day);
                                     }
                                 }
                             } else {
-                                // Try parsing as ISO string
                                 eventDate = new Date(dateStr);
                             }
                             
                             // If date is invalid, use fallback date
                             if (isNaN(eventDate.getTime())) {
-                                // Add days to current date for sample data
                                 const daysToAdd = events.length * 10 + 5;
                                 eventDate = new Date();
                                 eventDate.setDate(eventDate.getDate() + daysToAdd);
